@@ -14,4 +14,4 @@ impl ListNode {
 }
 
 // Working problem here
-pub mod p41_first_missing_positive;
+pub mod p42_trap;
