@@ -1,0 +1,22 @@
+[package]
+name = "leetcode"
+version = "0.1.0"
+authors = ["ritou11 <ritou11@gmail.com>"]
+edition = "2018"
+homepage = "https://github.com/dingelish/leetcode-rs"
+repository = "https://github.com/dingelish/leetcode-rs"
+license = "MIT"
+description = "Leetcode solutions in Rust"
+
+include = [
+    "Cargo.toml",
+    "LICENSE",
+    "README.md",
+    "src/*",
+]
+
+[lib]
+name = "leetcode"
+crate-type = ["rlib", "staticlib"]
+
+[dependencies]
