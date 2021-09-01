@@ -14,4 +14,4 @@ impl ListNode {
 }
 
 // Working problem here
-pub mod p42_trap;
+pub mod p43_multiply;
