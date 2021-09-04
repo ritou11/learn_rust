@@ -3,8 +3,8 @@ name = "leetcode"
 version = "0.1.0"
 authors = ["ritou11 <ritou11@gmail.com>"]
 edition = "2018"
-homepage = "https://github.com/dingelish/leetcode-rs"
-repository = "https://github.com/dingelish/leetcode-rs"
+homepage = "https://github.com/ritou11/learn_rust"
+repository = "https://github.com/ritou11/learn_rust"
 license = "MIT"
 description = "Leetcode solutions in Rust"
 
