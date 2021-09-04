@@ -14,4 +14,4 @@ impl ListNode {
 }
 
 // Working problem here
-pub mod p587_erect_the_fence;
+pub mod p834_sum_of_distances_in_tree;
