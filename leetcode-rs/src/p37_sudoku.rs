@@ -6,7 +6,7 @@ use crate::Solution;
 impl Solution {
     pub fn solve_sudoku(board: &mut Vec<Vec<char>>) {
         let mut mark = [[[0; 9]; 9]; 9];
-        let mut res = [[0; 9]; 9];
+        let mut res = [[10; 9]; 9];
         let mut cnt = [[9; 9]; 9];
         for i in 0..9 {
             for j in 0..9 {
@@ -17,7 +17,7 @@ impl Solution {
             }
         }
         Solution::search(&mut res, &mut mark, &mut cnt);
-        println!("{:?}", res);
+        // println!("{:?}", res);
         for i in 0..9 {
             for j in 0..9 {
                 board[i][j] = (res[i][j] + '1' as usize) as u8 as char;
@@ -25,29 +25,44 @@ impl Solution {
         }
     }
 
-    fn search(res: &mut [[usize; 9]; 9], mark: &mut [[[usize; 9]; 9]; 9], cnt: &mut [[usize; 9]; 9]) {
+    fn search(res: &mut [[usize; 9]; 9], mark: &mut [[[usize; 9]; 9]; 9], cnt: &mut [[usize; 9]; 9]) -> bool {
         let mut flag = true;
         while flag {
             flag = false;
-            for i in 0..9 {
-                for j in 0..9 {
-                    if cnt[i][j] == 1 {
-                        flag = true;
-                        for v in 0..9 {
-                            if mark[i][j][v] == 0 {
-                                Solution::place_number(res, mark, cnt, i, j, v);
-                                break;
-                            }
-                        }
+            for i in 0..9 { for j in 0..9 { if cnt[i][j] == 1 {
+                flag = true;
+                for v in 0..9 {
+                    if mark[i][j][v] == 0 {
+                        Solution::place_number(res, mark, cnt, i, j, v);
+                        break;
                     }
-                }
-            }
+            }}}}
         }
         let mut remains: Vec<(usize, usize, usize)> = Vec::new();
         for i in 0..9 { for j in 0..9 {
             if cnt[i][j] > 0 { remains.push((i, j, cnt[i][j])); }
+            if cnt[i][j] == 0 && res[i][j] == 10 { return false; }
         }}
+        if remains.len() == 0 { return true; }
         remains.sort_by_key(|t| t.2);
+        let ni = remains[0].0; let nj = remains[0].1;
+        for v in 0..9 { if mark[ni][nj][v] == 0 {
+            let mut n_res = res.to_owned();
+            let mut n_mark = mark.to_owned();
+            let mut n_cnt = cnt.to_owned();
+            Solution::place_number(&mut n_res, &mut n_mark, &mut n_cnt, ni, nj, v);
+            let solved = Solution::search(&mut n_res, &mut n_mark, &mut n_cnt);
+            if solved {
+                for i in 0..9 { for j in 0..9 {
+                    res[i][j] = n_res[i][j];
+                    cnt[i][j] = n_cnt[i][j];
+                    for x in 0..9 {
+                        mark[i][j][x] = n_mark[i][j][x];
+                }}}
+                return true;
+            }
+        }}
+        false
     }
 
     fn place_number(res: &mut [[usize; 9]; 9], mark: &mut [[[usize; 9]; 9]; 9], cnt: &mut [[usize; 9]; 9], i: usize, j: usize, x: usize) {
