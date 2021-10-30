@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p23_merge_k_lists;
+pub mod p1044_longest_dup_substring;
