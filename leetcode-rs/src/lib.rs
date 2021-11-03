@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p28_str_str;
+pub mod p27_remove_element;
