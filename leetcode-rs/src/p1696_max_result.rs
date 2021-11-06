@@ -1,4 +1,5 @@
 use crate::Solution;
+use std::collections::BinaryHeap;
 
 impl Solution {
     pub fn max_result(nums: Vec<i32>, k: i32) -> i32 {
@@ -6,27 +7,25 @@ impl Solution {
         if n == 1 {
             return nums[0];
         }
-        let mut d = Vec::new();
-        for i in 0..n {
-            d.push((i32::MIN, i));
-        }
-        d[n - 1] = (nums[n - 1], n - 1);
-        let mut r = n - 1;
-        let mut curr_max = d[n - 1].0;
-        for i in (0..n - 1).rev() {
-            d[i].0 = curr_max + nums[i];
-            curr_max = d[i].0;
-            let mut j = i;
-            while j <= r {
-                if d[j].0 < d[i].0 || d[j].1 >= i + k as usize {
-                    d.swap(j, r);
-                    r -= 1;
-                } else {
-                    curr_max = curr_max.max(d[j].0);
-                    j += 1;
+        let mut res = nums[0];
+        let mut d = BinaryHeap::new();
+        d.push((nums[0], 0));
+        for i in 1..n {
+            while d.len() > 0 {
+                match d.peek() {
+                    Some(&(val, idx)) => {
+                        if idx + (k as usize) < i {
+                            d.pop();
+                            continue;
+                        }
+                        res = nums[i] + val;
+                        d.push((res, i));
+                        break;
+                    },
+                    None => { break; }
                 }
             }
         }
-        d[0].0
+        res
     }
 }
