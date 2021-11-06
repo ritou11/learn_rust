@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p1345_jump_game_iv;
+pub mod p1340_max_jumps;
