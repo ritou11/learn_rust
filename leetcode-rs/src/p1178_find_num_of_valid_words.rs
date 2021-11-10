@@ -1,54 +1,40 @@
-use std::collections::HashMap;
+use crate::Solution;
 
 impl Solution {
     pub fn find_num_of_valid_words(words: Vec<String>, puzzles: Vec<String>) -> Vec<i32> {
-        let mut maps = Vec::new();
-        let mut first = Vec::new();
-        let mut res: Vec<i32> = Vec::new();
+        let mut b_puzzles = Vec::new();
+        let mut first: Vec<u32> = Vec::new();
         for p in &puzzles {
-            let mut mp = HashMap::new();
+            let mut mp: u32 = 0;
             let mut flag = true;
-            for c in p.chars() {
+            for b in p.bytes() {
                 if flag {
-                    first.push(c);
+                    first.push(1 << (b - 'a' as u8));
                     flag = false;
                 }
-                mp.insert(c, true);
+                mp |= 1 << (b - 'a' as u8);
             }
-            maps.push(mp);
-            res.push(0);
+            b_puzzles.push(mp);
         }
-        
-        let mut word_maps = Vec::new();
+        let mut b_words = Vec::new();
         for w in &words {
-            let mut mp = HashMap::new();
-            let mut flag = true;
-            for c in w.chars() {
-                mp.insert(c, true);
+            let mut mp: u32 = 0;
+            for b in w.bytes() {
+                mp |= 1 << (b - 'a' as u8);
             }
-            word_maps.push(mp);
+            b_words.push(mp);
         }
-        
+
+        let mut res: Vec<i32> = Vec::new();
         let mut i = 0;
-        for p in &puzzles {
+        for p in &b_puzzles {
             let mut cnt = 0;
-            let mut j = 0;
-            for w in &words {
-                if word_maps[j].get(&first[i]).is_some() {
-                    let mut success = true;
-                    for c in w.chars() {
-                        if maps[i].get(&c).is_none() {
-                            success = false;
-                            break;
-                        }
-                    }
-                    if success {
-                        cnt += 1;
-                    }
+            for w in &b_words {
+                if (w | p) == *p && (first[i] | w) == *w {
+                    cnt += 1;
                 }
-                j += 1;
             }
-            res[i] = cnt;
+            res.push(cnt);
             i += 1;
         }
         res

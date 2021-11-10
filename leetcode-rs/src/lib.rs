@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p1696_max_result;
+pub mod p1178_find_num_of_valid_words;
