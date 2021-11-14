@@ -1,6 +1,14 @@
+/**
+ * Your CombinationIterator object will be instantiated and called as such:
+ * let obj = CombinationIterator::new(characters, combinationLength);
+ * let ret_1: String = obj.next();
+ * let ret_2: bool = obj.has_next();
+ */
 struct CombinationIterator {
-    stack: Vec<(usize, Vec<char>)>,
+    stack: Vec<(usize, usize)>,
     curr: String,
+    length: usize,
+    chars: Vec<char>,
 }
 
 
@@ -12,32 +20,28 @@ impl CombinationIterator {
 
     fn new(characters: String, combinationLength: i32) -> Self {
         let mut stack = Vec::new();
-        let mut curr = String::new();
+        let curr = String::new();
         let chars: Vec<char> = characters.chars().collect();
-        stack.push((0, chars.clone()));
+        stack.push((0, 0));
         CombinationIterator {
             stack: stack,
             curr: curr,
+            length: combinationLength as usize,
+            chars: chars,
         }
     }
     
-    fn next(&self) -> String {
+    fn next(&mut self) -> String {
         while self.stack.len() > 0 {
             let top = self.stack.pop().unwrap();
-            if top.1.len() == 0 {
+            if self.stack.len() == self.length {
                 return self.curr.clone()
-            } else if top.1.len() > top.0 {
-                let mut next_nums = Vec::new();
-                for i in &top.1 {
-                    if *i != top.1[top.0] {
-                        next_nums.push(*i);
-                    }
-                }
+            } else if top.0 + top.1 < self.chars.len() {
                 if top.0 > 0 { self.curr.pop(); }
-                self.curr.push(top.1[top.0]);
-                stack.push((top.0 + 1, top.1.clone()));
-                stack.push((0, next_nums));
-            } else {
+                self.curr.push(self.chars[top.0 + top.1]);
+                self.stack.push((top.0 + 1, top.1));
+                self.stack.push((0, top.0 + top.1 + 1));
+            } else if top.0 > 0 {
                 self.curr.pop();
             }
         }
@@ -45,13 +49,11 @@ impl CombinationIterator {
     }
     
     fn has_next(&self) -> bool {
-        self.stack.len() > 0
+        if self.stack.len() <= 0 { return false; }
+        for i in 0..self.stack.len() {
+            if i + self.chars.len() - self.stack[i].1 - self.stack[i].0 >= self.length { return true; }
+        }
+        false
     }
 }
 
-/**
- * Your CombinationIterator object will be instantiated and called as such:
- * let obj = CombinationIterator::new(characters, combinationLength);
- * let ret_1: String = obj.next();
- * let ret_2: bool = obj.has_next();
- */
