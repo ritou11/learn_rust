@@ -1,6 +1,24 @@
 use crate::Solution;
 
 impl Solution {
+    pub fn find(fa: &mut Vec<usize>, x: usize) -> usize {
+        if x == fa[x] {
+            x
+        } else {
+            fa[x] = Solution::find(fa, fa[x]);
+            fa[x]
+        }
+    }
+    pub fn union(fa: &mut Vec<usize>, cnt: &mut Vec<usize>, x: usize, y: usize) -> usize {
+        let a = Solution::find(fa, x);
+        let b = Solution::find(fa, y);
+        if a == b { cnt[a] }
+        else {
+            cnt[a] += cnt[b];
+            fa[b] = a;
+            cnt[a]
+        }
+    }
     pub fn largest_component_size(nums: Vec<i32>) -> i32 {
         let n = nums.len();
         let mut mx = 0;
@@ -8,61 +26,23 @@ impl Solution {
             mx = mx.max(*num);
         }
 
-        let mut primes = Vec::new();
-        let mut is_prime = vec![true;mx as usize + 1];
-        is_prime[1] = false;
+        let mut fa = vec![0; mx as usize + 1];
+        let mut cnt = vec![0; mx as usize + 1];
+        for i in 0..=mx as usize { fa[i] = i; }
+        for i in 0..n { cnt[nums[i] as usize] = 1; }
         
-        for i in 2..(mx as f64).sqrt() as usize + 1 {
-            if is_prime[i] {
-                let mut j = i * i;
-                while j <= mx as usize {
-                    is_prime[j] = false;
-                    j += i;
-                }
-            }
-        }
-        for i in 2..mx as usize + 1 {
-            if is_prime[i] { primes.push(i as i32); }
-        }
-
-        let m = primes.len();
-        let mut map1 = vec![Vec::<usize>::new(); n];
-        let mut map2 = vec![Vec::<usize>::new(); m];
-
+        let mut res = 1;
         for i in 0..n {
-            for j in 0..m {
-                if primes[j] > nums[i] { break; }
-                if nums[i] % primes[j] == 0 {
-                    map1[i].push(j);
-                    map2[j].push(i);
+            let num = nums[i] as usize;
+            let mut j = 2;
+            while j * j <= num {
+                if num % j == 0 {
+                    res = res.max(Solution::union(&mut fa, &mut cnt, num, j));
+                    res = res.max(Solution::union(&mut fa, &mut cnt, num, num / j));
                 }
+                j += 1;
             }
         }
-
-        let mut visited = vec![false; n];
-        let mut queue = Vec::new();
-        let mut head = 0;
-        let mut res = 0;
-        for i in 0..n {
-            if visited[i] { continue; }
-            visited[i] = true;
-            queue.push(i);
-            let mut cnt = 0;
-            while head < queue.len() {
-                cnt += 1;
-                let idx = queue[head];
-                for v in &map1[idx] {
-                    for c in &map2[*v] {
-                        if !visited[*c] {
-                            visited[*c] = true;
-                            queue.push(*c);
-                        }
-                    }
-                }
-                head += 1;
-            }
-            res = res.max(cnt);
-        }
-        res
+        res as i32
     }
 }
