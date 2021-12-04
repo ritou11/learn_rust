@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p328_odd_even_list;
+pub mod p1032_stream_checker;
