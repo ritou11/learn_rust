@@ -39,4 +39,4 @@ impl TreeNode {
 }
 
 // Working problem here
-pub mod p59_generate_matrix;
+pub mod p1032_stream_checker;
