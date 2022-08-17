@@ -3,16 +3,10 @@ use crate::Solution;
 use std::collections::HashSet;
 
 impl Solution {
+    const TR: [&'static str; 26] = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."];
+    
     pub fn unique_morse_representations(words: Vec<String>) -> i32 {
-        let mut d = HashSet::new();
-        let tr = [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."];
-        for w in &words {
-            let mut s = String::from("");
-            for c in w.chars() {
-                s.push_str(tr[c as usize - 97]);
-            }
-            d.insert(s);
-        }
-        d.len() as i32
+        let conv = |w: String| w.into_bytes().into_iter().map(|c| Self::TR[(c - b'a') as usize]).collect::<String>();
+        words.into_iter().map(conv).collect::<HashSet<String>>().len() as i32
     }
 }
